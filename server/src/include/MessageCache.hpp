@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 
+// LRUCache for messages
 class MessageCache
 {
   public:
