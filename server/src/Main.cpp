@@ -1,5 +1,23 @@
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <uWebSockets/App.h>
+#include <uWebSockets/WebSocket.h>
+
+namespace DateTime
+{
+std::chrono::system_clock::time_point now()
+{
+    return std::chrono::system_clock::now();
+}
+
+void outputTime(const char *desc, std::chrono::system_clock::time_point &tp)
+{
+    std::time_t now = std::chrono::system_clock::to_time_t(tp);
+    std::cout << desc << std::put_time(std::localtime(&now), "%Y-%m-%d %H:%M") << "\n";
+}
+} // namespace DateTime
 
 int main()
 {
@@ -8,7 +26,7 @@ int main()
     /* ws->getUserData returns one of these */
     struct PerSocketData
     {
-        /* Fill with user data */
+        std::chrono::system_clock::time_point created_at;
     };
 
     /* Keep in mind that uWS::SSLApp({options}) is the same as uWS::App() when compiled without SSL support.
@@ -29,15 +47,18 @@ int main()
                    /* Handlers */
                    .upgrade = nullptr,
                    .open =
-                       [](auto * /*ws*/) {
-                           /* Open event here, you may access ws->getUserData() which points to a PerSocketData struct
-                            */
+                       [](uWS::WebSocket<false, true, PerSocketData> *ws) {
+                           auto user_data = ws->getUserData();
+                           user_data->created_at = DateTime::now();
+
+                           DateTime::outputTime("Client connected at ", user_data->created_at);
                        },
                    .message =
                        [](auto *ws, std::string_view message, uWS::OpCode opCode) {
                            /* This is the opposite of what you probably want; compress if message is LARGER than 16 kb
                             * the reason we do the opposite here; compress if SMALLER than 16 kb is to allow for
                             * benchmarking of large message sending without compression */
+                           std::cout << "Message received: " << message << std::endl;
                            ws->send(message, opCode, message.length() < 16 * 1024);
                        },
                    .dropped =
