@@ -1,27 +1,18 @@
+#include "include/DateTime.hpp"
+#include <MessageCache.hpp>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <uWebSockets/App.h>
 #include <uWebSockets/WebSocket.h>
-
-namespace DateTime
-{
-std::chrono::system_clock::time_point now()
-{
-    return std::chrono::system_clock::now();
-}
-
-void outputTime(const char *desc, std::chrono::system_clock::time_point &tp)
-{
-    std::time_t now = std::chrono::system_clock::to_time_t(tp);
-    std::cout << desc << std::put_time(std::localtime(&now), "%Y-%m-%d %H:%M") << "\n";
-}
-} // namespace DateTime
 
 int main()
 {
     std::cout << "Welcome to the homechat server!\n";
+
+    std::unique_ptr<MessageCache> message_cache = std::make_unique<MessageCache>();
 
     /* ws->getUserData returns one of these */
     struct PerSocketData

@@ -13,6 +13,7 @@ file(GLOB source_files
 )
 add_executable(${PROJECT_NAME} ${source_files})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${source_dir}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${source_dir}/include)
+
 target_link_libraries(${PROJECT_NAME} ${USOCKETS_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
