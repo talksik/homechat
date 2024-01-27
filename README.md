@@ -11,3 +11,6 @@ On sending message, it is broadcasted to all connected clients, including sender
 
 ![](https://i.imgur.com/wjnZKju.jpg)
 
+# Todo
+- [ ] figure out how to dockerize the server
+- [ ] port-forward server through homelab reverse proxy
