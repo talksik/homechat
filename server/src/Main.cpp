@@ -12,6 +12,7 @@ int main()
 {
     std::cout << "Welcome to the homechat server!\n";
 
+    std::mutex message_cache_mutex;
     std::unique_ptr<MessageCache> message_cache = std::make_unique<MessageCache>();
 
     /* ws->getUserData returns one of these */
@@ -39,7 +40,7 @@ int main()
              /* Handlers */
              .upgrade = nullptr,
              .open =
-                 [](uWS::WebSocket<false, true, PerSocketData> *ws) {
+                 [&](uWS::WebSocket<false, true, PerSocketData> *ws) {
                      auto user_data = ws->getUserData();
                      user_data->created_at = DateTime::now();
 
@@ -49,15 +50,29 @@ int main()
                          std::cout << "Failed to subscribe to * channel\n";
                          ws->close();
                      }
+
+                     std::lock_guard<std::mutex> lock(message_cache_mutex);
+                     auto messages = message_cache->last_ten_messages();
+                     ws->send(std::string("Welcome to the homechat server! Here are the last 10 messages: \n"), uWS::OpCode::TEXT, false);
+                     for (auto &message : messages)
+                     {
+                         ws->send(message, uWS::OpCode::TEXT, false);
+                     }
                  },
              .message =
-                 [](uWS::WebSocket<false, true, PerSocketData> *ws, std::string_view message, uWS::OpCode opCode) {
+                 [&](uWS::WebSocket<false, true, PerSocketData> *ws, std::string_view message, uWS::OpCode opCode) {
                      /* This is the opposite of what you probably want; compress if message is LARGER than 16 kb
                       * the reason we do the opposite here; compress if SMALLER than 16 kb is to allow for
                       * benchmarking of large message sending without compression */
                      std::cout << "Message received: " << message << std::endl;
                      ws->send(message, opCode, false);
                      ws->publish("*", message, opCode, false);
+
+                     std::lock_guard<std::mutex> lock(message_cache_mutex);
+                     if (!message_cache->add_message(std::string(message)))
+                     {
+                         std::cerr << "Failed to add message to cache" << std::endl;
+                     }
                  },
              .dropped =
                  [](auto * /*ws*/, std::string_view /*message*/, uWS::OpCode /*opCode*/) {

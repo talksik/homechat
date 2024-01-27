@@ -3,5 +3,10 @@
   "directory": "/home/talksik/code/homechat/server/build",
   "command": "/usr/bin/c++  -I/home/talksik/code/homechat/server/src/include -g -o CMakeFiles/HomechatServer.dir/src/Main.cpp.o -c /home/talksik/code/homechat/server/src/Main.cpp",
   "file": "/home/talksik/code/homechat/server/src/Main.cpp"
+},
+{
+  "directory": "/home/talksik/code/homechat/server/build",
+  "command": "/usr/bin/c++  -I/home/talksik/code/homechat/server/src/include -g -o CMakeFiles/HomechatServer.dir/src/MessageCache.cpp.o -c /home/talksik/code/homechat/server/src/MessageCache.cpp",
+  "file": "/home/talksik/code/homechat/server/src/MessageCache.cpp"
 }
 ]
