@@ -3,5 +3,10 @@
   "directory": "/home/talksik/code/homechat/client/build",
   "command": "/usr/bin/c++  -I/home/talksik/code/homechat/client/src/include -g -o CMakeFiles/HomechatClient.dir/src/Main.cpp.o -c /home/talksik/code/homechat/client/src/Main.cpp",
   "file": "/home/talksik/code/homechat/client/src/Main.cpp"
+},
+{
+  "directory": "/home/talksik/code/homechat/client/build",
+  "command": "/usr/bin/c++  -I/home/talksik/code/homechat/client/src/include -g -o CMakeFiles/HomechatClient.dir/src/easywsclient.cpp.o -c /home/talksik/code/homechat/client/src/easywsclient.cpp",
+  "file": "/home/talksik/code/homechat/client/src/easywsclient.cpp"
 }
 ]
